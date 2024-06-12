@@ -36,7 +36,8 @@ export const ENCRYPTION = {
 };
 
 export const API = {
-  BASE_URL: process.env.API_BASE_URL || ''
+  BASE_URL: process.env.API_BASE_URL || '',
+  GITHUB: process.env.API_GITHUB || ''
 };
 
 export const DB = {
@@ -96,3 +97,5 @@ export const REPROCESSING = {
   DELAYS: process.env.REPROCESSING_DELAYS?.split(',').map(Number) || [],
   MODE: process.env.REPROCESSING_MODE || 'STOPPED_MIDDLEWARE'
 };
+
+export const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';

@@ -4,3 +4,5 @@ export * from './example';
 export * from './mq';
 export * from './token';
 export * from './reprocessing';
+export * from './discussion';
+export * from './document';

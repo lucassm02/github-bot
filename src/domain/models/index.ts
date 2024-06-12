@@ -1,6 +1,7 @@
 export * from './authentication-key';
 export * from './cache';
 export * from './database-transaction';
+export * from './discussion';
 export * from './error';
 export * from './example';
 export * from './object';

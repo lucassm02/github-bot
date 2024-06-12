@@ -7,3 +7,5 @@ export * from './exchange';
 export * from './reprocessing';
 export * from './token';
 export * from './validation';
+export * from './discussion';
+export * from './document';

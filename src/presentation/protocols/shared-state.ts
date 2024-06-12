@@ -16,4 +16,7 @@ export type SharedState = {
   transactions: DatabaseTransaction[];
   getReprocessingDataByIdentifier: ReprocessingModel[];
   getReprocessingData: ReprocessingModel[];
+  formattedBody: string;
+  formattedJson: Record<string, unknown>;
+  documentLink: string;
 };
