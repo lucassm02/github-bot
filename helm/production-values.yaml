@@ -1,0 +1,114 @@
+replicaCount: 1
+image:
+  repository: ghcr.io/lucassm02/github-bot
+  pullPolicy: Always
+  tag: ""
+imagePullSecrets: null
+nameOverride: githubbot
+fullnameOverride: githubbot
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: null
+service:
+  enabled: true
+  type: NodePort
+  port: 80
+resources:
+  requests:
+    cpu: 20m
+    memory: 40Mi
+  limits:
+    cpu: 100m
+    memory: 150Mi
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+nodeSelector: {}
+tolerations: []
+affinity: {}
+check:
+  readiness:
+    enabled: true
+    path: /github-bot/v1/health
+    port: http
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: api.pagtel.com.br
+      paths:
+        - path: /github-bot/v1/webhooks
+          pathType: Exact
+  tls: []
+configs:
+  - name: NODE_ENV
+    refName: github-bot
+  - name: SERVER_ENABLED
+    refName: github-bot
+  - name: SERVER_PORT
+    refName: github-bot
+  - name: SERVER_BASE_URI
+    refName: github-bot
+  - name: CONSUMER_ENABLED
+    refName: github-bot
+  - name: WORKER_ENABLED
+    refName: github-bot
+  - name: WORKER_DASHBOARD_ENABLED
+    refName: github-bot
+  - name: WORKER_DASHBOARD_PORT
+    refName: github-bot
+  - name: WORKER_DASHBOARD_BASE_URI
+    refName: github-bot
+  - name: API_GITHUB
+    refName: github-bot
+  - name: MONGO_HOST
+    refName: github-bot
+  - name: MONGO_PORT
+    refName: github-bot
+  - name: MONGO_NAME
+    refName: github-bot
+  - name: MONGO_AUTH_SOURCE
+    refName: github-bot
+  - name: ELASTICSEARCH_ENABLED
+    refName: github-bot
+  - name: ELASTICSEARCH_SERVER_URL
+    refName: github-bot
+  - name: APM_ENABLED
+    refName: github-bot
+  - name: APM_SERVER_URL
+    refName: github-bot
+  - name: APM_ENVIRONMENT
+    refName: github-bot
+  - name: LOGGER_ENABLED
+    refName: github-bot
+  - name: LOGGER_CONSOLE_LEVEL
+    refName: github-bot
+  - name: LOGGER_DB_ENABLED
+    refName: github-bot
+  - name: REPROCESSING_ENABLED
+    refName: github-bot
+  - name: REPROCESSING_MAX_TRIES
+    refName: github-bot
+  - name: REPROCESSING_DELAYS
+    refName: github-bot
+secrets:
+  - name: MONGO_USER
+    refName: github-bot
+  - name: MONGO_PASSWORD
+    refName: github-bot
+  - name: ELASTICSEARCH_USERNAME
+    refName: github-bot
+  - name: ELASTICSEARCH_PASSWORD
+    refName: github-bot
+  - name: APM_SECRET_TOKEN
+    refName: github-bot
+  - name: GITHUB_TOKEN
+    refName: github-bot
