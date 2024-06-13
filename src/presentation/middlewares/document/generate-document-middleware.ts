@@ -14,11 +14,11 @@ export class GenerateDocumentMiddleware implements Middleware {
     next: Middleware.Next
   ): Middleware.Result {
     try {
-      const { documentLink } = await this.generateDocument.generate(
-        state.formattedJson
+      const response = await this.generateDocument.generate(
+        state.extractJsonFromDiscussion
       );
 
-      setState({ documentLink });
+      setState({ generateDocument: response });
       return next();
     } catch (error) {
       await this.errorHandler.handle(error);

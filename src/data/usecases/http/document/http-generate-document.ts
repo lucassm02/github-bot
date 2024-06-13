@@ -7,6 +7,10 @@ export class HttpGenerateDocument implements GenerateDocument {
   ) {}
 
   async generate(object: GenerateDocument.Params): GenerateDocument.Result {
+    if (object.documento || object['gerando link...']) {
+      return null;
+    }
+
     const client = <'SURF' | 'DATORA'>String(object.cliente).toUpperCase();
 
     const variableMakers = {
@@ -34,14 +38,16 @@ export class HttpGenerateDocument implements GenerateDocument {
       rollbackTime: object.rollback,
       requester: object.solicitante,
       systems: object.sistemas,
-      executorName: 'Henrique Almeida',
-      executorPhone: '(11) 96974-0521',
-      executorEmail: 'henrique.almeida@pagtel.com.br',
-      executorsPosition: 'Front-end Engineer',
+      executorName: object['nome do executor'],
+      executorPhone: object['telefone do executor'],
+      executorEmail: object['e-mail do executor'],
+      executorPosition: object['função do executor'],
       executor: object.executor,
-      impact: 'Nenhum impacto',
-      title: 'Adequação de parcelamento no site Correios',
-      description: object['descrição']
+      title: object.titulo,
+      impact: object['impacto da gmud'],
+      description: String(object['descrição'])
+        .replaceAll('> ', '')
+        .replaceAll('\r', '\n')
     };
   }
 
@@ -54,8 +60,10 @@ export class HttpGenerateDocument implements GenerateDocument {
       rollbackTime: object.rollback,
       requester: object.solicitante,
       systems: object.sistemas,
-      executor: object.executor,
-      description: object['descrição']
+      executorName: object['nome do executor'],
+      description: String(object['descrição'])
+        .replaceAll('> ', '')
+        .replaceAll('\r', '\n')
     };
   }
 }

@@ -4,9 +4,9 @@ export interface UpdateGithubDiscussion {
 
 export namespace UpdateGithubDiscussion {
   export type Params = {
-    currentBody: string;
     newBody: string;
-    newDocumentLink: string;
+    variables: Record<string, unknown>;
+    documentLink: string | undefined;
     discussionId: string;
   };
   export type Result = Promise<void>;

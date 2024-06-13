@@ -5,10 +5,12 @@ import {
 } from '@/presentation/protocols';
 import { serverError } from '@/presentation/utils/http-response';
 import { ExtractJsonFromDiscussion } from '@/domain/usecases/discussion';
+import { ErrorHandler } from '@/domain/usecases';
 
 export class ExtractJsonFromDiscussionMiddleware implements Middleware {
   constructor(
-    private readonly extractJsonFromDiscussion: ExtractJsonFromDiscussion
+    private readonly extractJsonFromDiscussion: ExtractJsonFromDiscussion,
+    private readonly errorHandler: ErrorHandler
   ) {}
 
   async handle(
@@ -17,15 +19,18 @@ export class ExtractJsonFromDiscussionMiddleware implements Middleware {
     next: Middleware.Next
   ): Promise<HttpResponse> {
     try {
-      const { formattedBody } = state;
+      const object = this.extractJsonFromDiscussion.extract(
+        state.formatDiscussion.body
+      );
 
-      const formattedJson =
-        this.extractJsonFromDiscussion.extract(formattedBody);
-
-      setState({ formattedJson });
+      setState({ extractJsonFromDiscussion: object });
       return next();
     } catch (error) {
-      return serverError(error);
+      await this.errorHandler.handle(error);
+      switch (error.message) {
+        default:
+          return serverError(error);
+      }
     }
   }
 }

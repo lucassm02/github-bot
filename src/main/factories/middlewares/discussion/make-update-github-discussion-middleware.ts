@@ -4,7 +4,15 @@ import { httpGithub } from '@/infra/http/service/utils/http-github';
 import { UpdateGithubDiscussion } from '@/data/usecases/other/discussion';
 import { UpdateGithubDiscussionService } from '@/infra/http/service/github';
 
-export const makeUpdateGithubDiscussionMiddleware = () => {
+import { makeErrorHandler } from '../../usecases';
+
+type FactoryParams = {
+  context?: 'DEFAULT' | 'GENERATING_DOCUMENT';
+};
+
+export const makeUpdateGithubDiscussionMiddleware = ({
+  context
+}: FactoryParams = {}) => {
   const httpClient = new RequestAdapter(httpGithub);
 
   const updateGithubDiscussionService = new UpdateGithubDiscussionService(
@@ -12,7 +20,11 @@ export const makeUpdateGithubDiscussionMiddleware = () => {
   );
 
   const updateGithubDiscussion = new UpdateGithubDiscussion(
-    updateGithubDiscussionService
+    updateGithubDiscussionService,
+    context ?? 'DEFAULT'
   );
-  return new UpdateGithubDiscussionMiddleware(updateGithubDiscussion);
+  return new UpdateGithubDiscussionMiddleware(
+    updateGithubDiscussion,
+    makeErrorHandler()
+  );
 };

@@ -5,9 +5,13 @@ import {
 } from '@/presentation/protocols';
 import { serverError } from '@/presentation/utils/http-response';
 import { FormatDiscussion } from '@/domain/usecases/discussion';
+import { ErrorHandler } from '@/domain/usecases';
 
 export class FormatDiscussionMiddleware implements Middleware {
-  constructor(private readonly formatDiscussion: FormatDiscussion) {}
+  constructor(
+    private readonly formatDiscussion: FormatDiscussion,
+    private readonly errorHandler: ErrorHandler
+  ) {}
 
   async handle(
     httpRequest: HttpRequest,
@@ -21,10 +25,14 @@ export class FormatDiscussionMiddleware implements Middleware {
 
       const formattedBody = this.formatDiscussion.format(body);
 
-      setState({ formattedBody });
+      setState({ formatDiscussion: { body: formattedBody } });
       return next();
     } catch (error) {
-      return serverError(error);
+      await this.errorHandler.handle(error);
+      switch (error.message) {
+        default:
+          return serverError(error);
+      }
     }
   }
 }

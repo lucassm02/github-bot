@@ -3,17 +3,23 @@ import {
   GenerateDocumentService as Protocol
 } from '@/data/protocols/http';
 
+type ResponseBody = {
+  message: string;
+  payload: {
+    link: string;
+  };
+};
 export class GenerateDocumentService implements Protocol {
   constructor(private readonly httpClient: HttpClient) {}
   async generate(body: Protocol.Params): Protocol.Result {
     const response = await this.httpClient.request({
-      url: `https://script.google.com/macros/s/AKfycbzXn3nSd3d5tAdKSaS_E1VmRMsjkcpw97kNhuBNh7vw7Q0Gn3fnA9p80Nl8N5F_EEgPGQ/exec`,
+      url: `https://script.google.com/macros/s/AKfycbxkwbvmyAJa7jqNzeMCGXOVLxxu53zc0B56K919pcSU3pjW4aqpWJ7kVH8dBmuDg_Wlhw/exec`,
       method: 'POST',
       body
     });
 
-    const link = String(response.body.message).split(' link: ')[1];
+    const responseBody = <ResponseBody>response.body;
 
-    return { link };
+    return { link: responseBody.payload.link };
   }
 }

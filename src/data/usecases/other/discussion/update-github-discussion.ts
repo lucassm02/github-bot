@@ -3,20 +3,28 @@ import { UpdateGithubDiscussionService } from '@/infra/http/service/github';
 
 export class UpdateGithubDiscussion implements Protocol {
   constructor(
-    private readonly githubHttpService: UpdateGithubDiscussionService
+    private readonly githubHttpService: UpdateGithubDiscussionService,
+    private readonly context: 'DEFAULT' | 'GENERATING_DOCUMENT'
   ) {}
 
   async update({
-    currentBody,
     newBody,
     discussionId,
-    newDocumentLink
+    documentLink,
+    variables
   }: Protocol.Params): Protocol.Result {
-    if (currentBody === newBody) return;
+    if (this.context === 'DEFAULT' && !documentLink) return;
 
-    const cleanedBody = newBody.replace(/\[.*?\]\(.*?\)/g, '').trimEnd();
+    if (variables['gerando link...'] || variables.documento) {
+      return;
+    }
 
-    const bodyWithLink = `${cleanedBody}\n[Link do documento](${newDocumentLink})`;
+    const mdLink =
+      this.context === 'DEFAULT'
+        ? `[Documento](${documentLink})`
+        : '[Gerando link...](https://github.com/orgs/pagtel/discussions)';
+
+    const bodyWithLink = `${newBody}\n${mdLink}`;
 
     await this.githubHttpService.updateDiscussion({
       discussionId,

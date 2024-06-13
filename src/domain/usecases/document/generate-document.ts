@@ -4,6 +4,6 @@ export interface GenerateDocument {
 
 export namespace GenerateDocument {
   export type Params = Record<string, unknown>;
-  export type Result = Promise<{ documentLink: string }>;
+  export type Result = Promise<{ documentLink: string } | null>;
   export enum Exceptions {}
 }

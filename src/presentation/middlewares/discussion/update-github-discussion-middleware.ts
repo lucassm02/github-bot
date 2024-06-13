@@ -5,11 +5,13 @@ import {
 } from '@/presentation/protocols';
 import { serverError } from '@/presentation/utils/http-response';
 import { UpdateGithubDiscussion } from '@/domain/usecases/discussion';
+import { ErrorHandler } from '@/domain/usecases';
 
 type Body = { discussion: { nodeId: string; body: string } };
 export class UpdateGithubDiscussionMiddleware implements Middleware {
   constructor(
-    private readonly updateGithubDiscussion: UpdateGithubDiscussion
+    private readonly updateGithubDiscussion: UpdateGithubDiscussion,
+    private readonly errorHandler: ErrorHandler
   ) {}
 
   async handle(
@@ -19,20 +21,23 @@ export class UpdateGithubDiscussionMiddleware implements Middleware {
   ): Promise<HttpResponse> {
     try {
       const {
-        discussion: { body, nodeId }
+        discussion: { nodeId }
       } = <Body>httpRequest.body;
-      const { formattedBody, documentLink } = state;
 
       await this.updateGithubDiscussion.update({
         discussionId: nodeId,
-        currentBody: body,
-        newBody: formattedBody,
-        newDocumentLink: documentLink
+        variables: state.extractJsonFromDiscussion,
+        newBody: state.formatDiscussion.body,
+        documentLink: state.generateDocument?.documentLink
       });
 
       return next();
     } catch (error) {
-      return serverError(error);
+      await this.errorHandler.handle(error);
+      switch (error.message) {
+        default:
+          return serverError(error);
+      }
     }
   }
 }

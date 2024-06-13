@@ -23,6 +23,9 @@ export default (route: Route): void => {
           requestValidationAdapter(discussionWebhookSchema),
           makeFormatDiscussionMiddleware(),
           makeExtractJsonFromDiscussionMiddleware(),
+          makeUpdateGithubDiscussionMiddleware({
+            context: 'GENERATING_DOCUMENT'
+          }),
           makeGenerateDocumentMiddleware(),
           makeUpdateGithubDiscussionMiddleware()
         )
